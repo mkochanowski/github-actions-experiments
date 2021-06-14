@@ -1,0 +1,22 @@
+name: 'Ansible playbook test workflow (custom)'
+on: [push]
+defaults:
+  run:
+    shell: bash
+env:
+  ANSIBLE_FORCE_COLOR: True
+  ANSIBLE_STDOUT_CALLBACK: custom
+
+jobs:
+  perform-experiment:
+    name: 'Setup and start minikube'
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Start minikube
+        run: ansible-playbook start-minikube.yml
+
+      - name: Get nodes
+        run: oc get nodes

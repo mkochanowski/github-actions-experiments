@@ -1,0 +1,19 @@
+name: 'GitHub Composite Action test workflow'
+on: [push]
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  perform-experiment:
+    name: 'Setup and start minikube'
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Start minikube cluster
+        uses: ./.github/actions/start-minikube
+
+      - name: Get nodes
+        run: oc get nodes

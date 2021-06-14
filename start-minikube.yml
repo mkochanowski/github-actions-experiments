@@ -1,0 +1,39 @@
+---
+- name: "Test playbook with environment variables and secrets"
+  hosts: localhost
+  gather_facts: no
+
+  vars:
+    minikube_version: v1.18.1
+    minikube_driver: docker
+    minikube_extra_options: '--embed-certs'
+    oc_kcm_timeout: 90s
+
+  tasks:
+    - name: Download minikube debian package
+      shell: |
+        curl -Lo minikube.deb https://storage.googleapis.com/minikube/releases/{{ minikube_version }}/minikube_latest_amd64.deb
+
+    - name: Install minikube
+      shell: dpkg -i minikube.deb
+      become: yes
+
+    - name: Set the default VM driver
+      shell: minikube config set vm-driver {{ minikube_driver }}
+
+    - name: Start minikube cluster
+      shell: minikube start {{ minikube_extra_options }}
+
+    # The waiting is performed to allow the `kube-controller-manager` to start all required controllers,
+    # such as the `service-account-controller` responsible for managing and creating Service Accounts.
+    - name: Wait for kube-controller-manager
+      shell: |
+        echo "Waiting for kube-controller-manager... (timeout: {{ oc_kcm_timeout }})" && \
+        oc wait -n kube-system --for=condition=ready pod/kube-controller-manager-minikube --timeout={{ oc_kcm_timeout }}
+
+    - name: Display kube-system pods
+      shell: oc get pods -n kube-system -o wide
+
+    - name: Display a friendly summary message
+      shell: echo "TNF-compatible minikube cluster is ready to go! Have fun!"
+
