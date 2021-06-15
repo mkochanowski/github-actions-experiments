@@ -1,0 +1,19 @@
+name: 'Showcase features of the custom callback plugin'
+on: [push]
+defaults:
+  run:
+    shell: bash
+env:
+  ANSIBLE_FORCE_COLOR: True
+  ANSIBLE_STDOUT_CALLBACK: custom
+
+jobs:
+  run-minikube-test-cluster:
+    name: 'Run a minikube test cluster'
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Showcase features
+        run: ansible-playbook showcase-features.yml
