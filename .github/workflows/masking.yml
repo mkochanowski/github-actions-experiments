@@ -1,0 +1,21 @@
+name: 'Output masking on GitHub Actions'
+on: [push]
+defaults:
+  run:
+    shell: bash
+
+env:
+  SECRET_A: ${{ secrets.SECRET_A }}
+  SECRET_E: ${{ secrets.SECRET_E }}
+  SECRET_O: ${{ secrets.SECRET_O }}
+
+jobs:
+  test-output-masking:
+    name: 'Test masking of secrets in stdout'
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Print contents of a mysterious file. What is it?
+        run: cat agile-manifesto.txt

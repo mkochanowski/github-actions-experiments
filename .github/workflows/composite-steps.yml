@@ -5,15 +5,15 @@ defaults:
     shell: bash
 
 jobs:
-  perform-experiment:
-    name: 'Setup and start minikube'
+  run-minikube-test-cluster:
+    name: 'Run a minikube test cluster'
     runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
 
-      - name: Start minikube cluster
+      - name: Start minikube
         uses: ./.github/actions/start-minikube
 
-      - name: Get nodes
+      - name: Display nodes
         run: oc get nodes

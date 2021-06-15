@@ -1,5 +1,5 @@
 ---
-- name: Create and configure a minikube cluster
+- name: Showcase features of the custom Ansible callback
   hosts: localhost
   gather_facts: no
 
@@ -16,13 +16,15 @@
 
     - name: Install minikube
       shell: dpkg -i minikube.deb
-      become: yes
+      ignore_errors: yes
 
     - name: Set the default VM driver
       shell: minikube config set vm-driver {{ minikube_driver }}
+      no_log: true
 
     - name: Start minikube cluster
       shell: minikube start {{ minikube_extra_options }}
+      when: False
 
     # The waiting is performed to allow the `kube-controller-manager` to start all required controllers,
     # such as the `service-account-controller` responsible for managing and creating Service Accounts.
@@ -30,10 +32,12 @@
       shell: |
         echo "Waiting for kube-controller-manager... (timeout: {{ oc_kcm_timeout }})" && \
         oc wait -n kube-system --for=condition=ready pod/kube-controller-manager-minikube --timeout={{ oc_kcm_timeout }}
+      when: False
 
     - name: Display kube-system pods
       shell: oc get pods -n kube-system -o wide
+      when: False
 
     - name: Display a friendly summary message
-      shell: echo "TNF-compatible minikube cluster is ready to go! Have fun!"
+      shell: echo "Bye bye!"
 

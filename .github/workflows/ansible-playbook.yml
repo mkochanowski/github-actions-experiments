@@ -1,4 +1,4 @@
-name: 'Ansible playbook test workflow (custom)'
+name: 'Ansible playbook test workflow (custom callback)'
 on: [push]
 defaults:
   run:
@@ -8,8 +8,8 @@ env:
   ANSIBLE_STDOUT_CALLBACK: custom
 
 jobs:
-  perform-experiment:
-    name: 'Setup and start minikube'
+  run-minikube-test-cluster:
+    name: 'Run a minikube test cluster'
     runs-on: ubuntu-20.04
 
     steps:
@@ -18,5 +18,5 @@ jobs:
       - name: Start minikube
         run: ansible-playbook start-minikube.yml
 
-      - name: Get nodes
+      - name: Display nodes
         run: oc get nodes
